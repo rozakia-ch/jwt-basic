@@ -4,8 +4,6 @@ namespace app\controllers;
 
 use app\models\User;
 use app\models\UserRefreshToken;
-use Firebase\JWT\JWT as fbJwt;
-use Firebase\JWT\Key;
 use Yii;
 
 class AuthController extends BaseController
@@ -15,7 +13,8 @@ class AuthController extends BaseController
    */
   public function actionLogin()
   {
-    $user = User::findIdentity(100);
+    $params = Yii::$app->request->getBodyParams();
+    $user = User::findIdentity($params['id']);
     $token = $this->generateJwt($user);
     $refreshToken = $this->generateRefreshToken($user);
     return [
@@ -61,9 +60,8 @@ class AuthController extends BaseController
 
   public function actionData()
   {
-    $token = Yii::$app->request->headers->get('authorization');
-    $decoded = fbJwt::decode(str_replace('Bearer ', '', $token), new Key(Yii::$app->params['jwtSecretKey'], 'HS256'));
-    return ['data' => $decoded];
+    $data = Yii::$app->session['user'];
+    return ['data' => $data];
   }
 
   private function generateJwt(User $user)

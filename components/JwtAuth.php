@@ -28,7 +28,7 @@ class JwtAuth extends AuthMethod
       $identity = User::findIdentity($decoded->uid);
       if (!$identity)
         $this->handleFailure($response);
-
+      Yii::$app->session->set('user', $identity);
       return $identity;
     }
     return null;

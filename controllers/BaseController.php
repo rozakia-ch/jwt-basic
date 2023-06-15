@@ -16,6 +16,7 @@ class BaseController extends \yii\rest\Controller
    */
   public function behaviors()
   {
+    // ini_set('memory_limit', -1);
     date_default_timezone_set("Asia/Jakarta");
     $behaviors = parent::behaviors();
 
