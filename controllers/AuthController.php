@@ -19,9 +19,11 @@ class AuthController extends BaseController
     $token = $this->generateJwt($user);
     $refreshToken = $this->generateRefreshToken($user);
     return [
-      'user' => $user,
-      'token' => (string) $token,
-      'refreshToken' => $refreshToken->urf_token
+      'data' => [
+        'user' => $user,
+        'accessToken' => (string) $token,
+        'refreshToken' => $refreshToken->urf_token
+      ]
     ];
   }
 
@@ -43,7 +45,10 @@ class AuthController extends BaseController
         return new \yii\web\UnauthorizedHttpException('The user is inactive.');
       }
       $token = $this->generateJwt($user);
-      return ['data' => (string) $token];
+      return ['data' => [
+        'refreshToken' => $userRefreshToken->urf_token,
+        'accessToken' => (string) $token
+      ]];
     } elseif (Yii::$app->request->getMethod() == 'DELETE') {
       // Logging out
       if ($userRefreshToken && !$userRefreshToken->delete())
