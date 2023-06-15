@@ -99,7 +99,15 @@ class AuthController extends BaseController
     $userRefreshToken->urf_user_agent = Yii::$app->request->userAgent;
     if (!$userRefreshToken->save())
       throw new \yii\web\ServerErrorHttpException('Failed to save the refresh token: ' . $userRefreshToken->getErrorSummary(true));
-
+    // Send the refresh-token to the user in a HttpOnly cookie that Javascript can never read and that's limited by path
+    // Yii::$app->response->cookies->add(new \yii\web\Cookie([
+    //   'name' => 'refreshToken',
+    //   'value' => $userRefreshToken->urf_token,
+    //   'httpOnly' => true,
+    //   'sameSite' => 'none',
+    //   'secure' => true,
+    //   'path' => 'auth/refresh-token',  //endpoint URI for renewing the JWT token using this refresh-token, or deleting refresh-token
+    // ]));
     return $userRefreshToken;
   }
 }
